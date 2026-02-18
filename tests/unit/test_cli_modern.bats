@@ -837,8 +837,7 @@ EOF
 
 @test "live mode pipeline has set +e before set -o pipefail" {
     # Verify that errexit is disabled BEFORE pipefail is enabled.
-    # Without this, timeout exit code 124 silently kills the script.
-    # Scoped to the live-mode block to avoid false positives from other sections.
+    # Without this, timeout exit code 124 silently kills the script (Issue #175).
     local script="${BATS_TEST_DIRNAME}/../../ralph_loop.sh"
 
     # Extract only the live-mode section (from "Live output mode enabled" to "End of Output")
@@ -860,10 +859,8 @@ EOF
 
 @test "live mode pipeline re-enables set -e after PIPESTATUS capture" {
     # Verify that errexit is re-enabled after the pipeline exit codes are captured.
-    # Scoped to the live-mode block to avoid matching the global set -e at line 6.
     local script="${BATS_TEST_DIRNAME}/../../ralph_loop.sh"
 
-    # Extract only the live-mode section
     local live_block
     live_block=$(sed -n '/Live output mode enabled/,/End of Output/p' "$script")
 
